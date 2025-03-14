@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Engineering Diagram Pipe Removal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --success: #4CAF50;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .app-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .dashboard-title {
+            font-weight: 700;
+            color: var(--dark-bg);
+            margin-bottom: 15px;
+        }
+        
+        .dashboard-description {
+            color: #6c757d;
+            max-width: 800px;
+        }
+        
+        .upload-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+        
+        .upload-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .file-input-container {
+            border: 2px dashed #e9ecef;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .file-input-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .file-input-container input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .preview-container {
+            margin: 25px 0;
+            display: none;
+            text-align: center;
+        }
+        
+        #previewImage {
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-process {
+            background: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn-process:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .advanced-options-toggle {
+            color: var(--primary-color);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            margin: 15px 0;
+            user-select: none;
+        }
+        
+        .advanced-options-toggle i {
+            transition: var(--transition);
+            margin-left: 6px;
+        }
+        
+        .advanced-options-toggle.expanded i {
+            transform: rotate(180deg);
+        }
+        
+        .advanced-options {
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            opacity: 0;
+        }
+        
+        .advanced-options.show {
+            max-height: 1000px;
+            opacity: 1;
+            margin: 20px 0;
+        }
+        
+        .parameter-container {
+            margin-bottom: 15px;
+        }
+        
+        .parameter-slider {
+            margin-top: 5px;
+        }
+        
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 40px;
+            display: inline-block;
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 40px;
+        }
+        
+        .results-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .image-comparison-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+        
+        .comparison-header {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .image-title {
+            font-weight: 600;
+            color: var(--dark-bg);
+            margin-bottom: 5px;
+        }
+        
+        .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            max-height: 500px;
+            text-align: center;
+        }
+        
+        .image-wrapper img {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-wrapper:hover img {
+            transform: scale(1.02);
+        }
+        
+        .visualization-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .viz-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: var(--transition);
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .viz-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .loading-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .image-view {
+            display: none;
+        }
+        
+        .image-view.active {
+            display: block;
+        }
+        
+        .comparison-slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .comparison-slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: var(--primary-color);
+            cursor: ew-resize;
+            z-index: 10;
+        }
+        
+        .comparison-slider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .comparison-before, 
+        .comparison-after {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .comparison-before {
+            left: 0;
+            z-index: 5;
+        }
+        
+        .comparison-after {
+            right: 0;
+        }
+        
+        .comparison-after img,
+        .comparison-before img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .parameter-reset {
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 5px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 14px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .download-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-header {
+                text-align: center;
+            }
+            .dashboard-description {
+                margin: 0 auto;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+        
+        .process-success {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-project-diagram"></i> DiagramProcessor</a>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Simplify Diagrams: Remove Connecting Lines</h1>
+            <p class="dashboard-description">
+                Advanced computer vision tool for removing pipes while preserving important symbols in engineering diagrams.
+                Upload your engineering schematic to get started.
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="upload-card">
+                    <h4><i class="fas fa-upload me-2"></i> Upload Diagram</h4>
+                    
+                    <div class="file-input-container mt-3" id="dropZone">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h5>Drag & Drop your file here</h5>
+                        <p class="text-muted">or click to browse files</p>
+                        <small class="text-muted">Supported formats: PNG, JPG, JPEG, BMP</small>
+                        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.bmp">
+                    </div>
+                    
+                    <div class="preview-container" id="previewContainer">
+                        <img id="previewImage" src="" alt="Preview">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="advanced-options-toggle" id="advancedOptionsToggle">
+                            Advanced Parameters <i class="fas fa-chevron-down"></i>
+                        </div>
+                        
+                        <button type="button" id="processButton" class="btn btn-primary btn-process" disabled>
+                            <i class="fas fa-magic me-2"></i> Process Diagram
+                        </button>
+                    </div>
+
+                    
+                    <div class="advanced-options" id="advancedOptions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="parameter-container">
+                                    <label>Edge Detection Threshold 1 <span class="slider-value" id="edgeThreshold1Value">50</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="edgeThreshold1" data-default="50"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="10" max="150" value="50" id="edgeThreshold1">
+                                </div>
+                                
+                                <div class="parameter-container">
+                                    <label>Edge Detection Threshold 2 <span class="slider-value" id="edgeThreshold2Value">150</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="edgeThreshold2" data-default="150"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="50" max="250" value="150" id="edgeThreshold2">
+                                </div>
+                                
+                                <div class="parameter-container">
+                                    <label>Hough Transform Threshold <span class="slider-value" id="houghThresholdValue">100</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="houghThreshold" data-default="100"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="50" max="200" value="100" id="houghThreshold">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="parameter-container">
+                                    <label>Min Line Length <span class="slider-value" id="minLineLengthValue">100</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="minLineLength" data-default="100"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="50" max="200" value="100" id="minLineLength">
+                                </div>
+                                
+                                <div class="parameter-container">
+                                    <label>Max Line Gap <span class="slider-value" id="maxLineGapValue">5</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="maxLineGap" data-default="5"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="1" max="20" value="5" id="maxLineGap">
+                                </div>
+                                
+                                <div class="parameter-container">
+                                    <label>Dilation Iterations <span class="slider-value" id="dilationIterationsValue">2</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="dilationIterations" data-default="2"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="1" max="5" value="2" id="dilationIterations">
+                                </div>
+                                
+                                <div class="parameter-container">
+                                    <label>Inpaint Radius <span class="slider-value" id="inpaintRadiusValue">3</span>
+                                        <i class="fas fa-undo parameter-reset" title="Reset to default" data-param="inpaintRadius" data-default="3"></i>
+                                    </label>
+                                    <input type="range" class="form-range parameter-slider" min="1" max="10" value="3" id="inpaintRadius">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="resultsContainer" class="results-container">
+            <div class="results-header">
+                <h3><i class="fas fa-chart-line me-2"></i> Processing Results</h3>
+                <div class="results-actions">
+                    <button id="reprocessButton" class="btn btn-outline-primary">
+                        <i class="fas fa-sync-alt me-2"></i> Reprocess
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="upload-card">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <button type="button" id="beforeButton" class="btn btn-secondary">
+                                <i class="fas fa-eye me-2"></i> Before
+                            </button>
+                            <button type="button" id="afterButton" class="btn btn-secondary">
+                                <i class="fas fa-eye me-2"></i> After
+                            </button>
+                        </div>
+            
+                        <div class="preview-container mt-3" id="beforePreviewContainer" style="display: none;">
+                            <h4>Before Processing</h4>
+                            <img id="beforeImage" src="" alt="Before Preview" style="width: 1000px; height: auto; display: block; margin: 0 auto;">
+                        </div>
+            
+                        <div class="preview-container mt-3" id="afterPreviewContainer" style="display: none;">
+                            <h4>After Processing</h4>
+                            <img id="afterImage" src="" alt="After Preview" style="width: 1000px; height: auto; display: block; margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                document.getElementById('beforeButton').addEventListener('click', function() {
+                    const uploadedImage = document.getElementById('previewImage') ? document.getElementById('previewImage').src : '';
+                    if (uploadedImage) {
+                        document.getElementById('beforeImage').src = uploadedImage;
+                        document.getElementById('beforePreviewContainer').style.display = 'block';
+                    }
+                });
+            
+                document.getElementById('afterButton').addEventListener('click', function() {
+                    const processedImage = document.getElementById('processedImage') ? document.getElementById('processedImage').src : '';
+                    if (processedImage) {
+                        document.getElementById('afterImage').src = processedImage;
+                        document.getElementById('afterPreviewContainer').style.display = 'block';
+                    }
+                });
+            </script>
+            
+            
+            
+            
+
+            
+            
+                        
+                        <div class="comparison-slider-container" id="comparisonContainer">
+                            <div class="comparison-slider" id="comparisonSlider"></div>
+                            <div class="comparison-before">
+                                <img id="beforeImage" src="" alt="Original Image">
+                            </div>
+                            <div class="comparison-after">
+                                <img id="afterImage" src="" alt="Processed Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="image-comparison-card">
+                        <div class="comparison-header">
+                            <div>
+                                <h5 class="image-title">Pipeline Visualization</h5>
+                                <p class="text-muted">See all steps in the pipe removal process</p>
+                            </div>
+                            <a id="downloadProcessed" class="download-btn" download>
+                                <i class="fas fa-download"></i> Download Result
+                            </a>
+                        </div>
+                        
+                        <div class="visualization-tabs">
+                            <div class="viz-tab active" data-view="processed">Final Result</div>
+                            <div class="viz-tab" data-view="edges">Edge Detection</div>
+                            <div class="viz-tab" data-view="lines">Line Detection</div>
+                            <div class="viz-tab" data-view="mask">Pipe Mask</div>
+                        </div>
+                        
+                        <div class="image-wrapper">
+                            <div class="image-view active" id="processedView">
+                                <img id="processedImage" src="" alt="Processed Image">
+                            </div>
+                            <div class="image-view" id="edgesView">
+                                <img id="edgesImage" src="" alt="Edge Detection">
+                            </div>
+                            <div class="image-view" id="linesView">
+                                <img id="linesImage" src="" alt="Line Detection">
+                            </div>
+                            <div class="image-view" id="maskView">
+                                <img id="maskImage" src="" alt="Pipe Mask">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing your diagram...</div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notyf = new Notyf({
+                duration: 3000,
+                position: { x: 'right', y: 'top' },
+                types: [
+                    {
+                        type: 'success',
+                        background: '#4CAF50',
+                        icon: {
+                            className: 'fas fa-check-circle',
+                            tagName: 'i'
+                        }
+                    },
+                    {
+                        type: 'error',
+                        background: '#F44336',
+                        icon: {
+                            className: 'fas fa-times-circle',
+                            tagName: 'i'
+                        }
+                    }
+                ]
+            });
+            
+            const fileInput = document.getElementById('fileInput');
+            const dropZone = document.getElementById('dropZone');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImage = document.getElementById('previewImage');
+            const processButton = document.getElementById('processButton');
+            const advancedOptionsToggle = document.getElementById('advancedOptionsToggle');
+            const advancedOptions = document.getElementById('advancedOptions');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const reprocessButton = document.getElementById('reprocessButton');
+            const comparisonSlider = document.getElementById('comparisonSlider');
+            const comparisonContainer = document.getElementById('comparisonContainer');
+            const beforeImage = document.getElementById('beforeImage');
+            const afterImage = document.getElementById('afterImage');
+            const downloadProcessed = document.getElementById('downloadProcessed');
+            const processedImage = document.getElementById('processedImage');
+            const edgesImage = document.getElementById('edgesImage');
+            const linesImage = document.getElementById('linesImage');
+            const maskImage = document.getElementById('maskImage');
+            
+            let currentFile = null;
+            
+            const paramSliders = {
+                edgeThreshold1: document.getElementById('edgeThreshold1'),
+                edgeThreshold2: document.getElementById('edgeThreshold2'),
+                houghThreshold: document.getElementById('houghThreshold'),
+                minLineLength: document.getElementById('minLineLength'),
+                maxLineGap: document.getElementById('maxLineGap'),
+                dilationIterations: document.getElementById('dilationIterations'),
+                inpaintRadius: document.getElementById('inpaintRadius')
+            };
+            
+            const paramValues = {
+                edgeThreshold1Value: document.getElementById('edgeThreshold1Value'),
+                edgeThreshold2Value: document.getElementById('edgeThreshold2Value'),
+                houghThresholdValue: document.getElementById('houghThresholdValue'),
+                minLineLengthValue: document.getElementById('minLineLengthValue'),
+                maxLineGapValue: document.getElementById('maxLineGapValue'),
+                dilationIterationsValue: document.getElementById('dilationIterationsValue'),
+                inpaintRadiusValue: document.getElementById('inpaintRadiusValue')
+            };
+            
+            for (const [paramName, slider] of Object.entries(paramSliders)) {
+                const valueElement = paramValues[`${paramName}Value`];
+                slider.addEventListener('input', function() {
+                    valueElement.textContent = this.value;
+                });
+            }
+            
+            document.querySelectorAll('.parameter-reset').forEach(resetButton => {
+                resetButton.addEventListener('click', function() {
+                    const paramName = this.getAttribute('data-param');
+                    const defaultValue = this.getAttribute('data-default');
+                    paramSliders[paramName].value = defaultValue;
+                    paramValues[`${paramName}Value`].textContent = defaultValue;
+                });
+            });
+            
+            advancedOptionsToggle.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+                advancedOptions.classList.toggle('show');
+            });
+            
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropZone.style.borderColor = '#4361ee';
+                dropZone.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
+            }
+            
+            function unhighlight() {
+                dropZone.style.borderColor = '#e9ecef';
+                dropZone.style.backgroundColor = '';
+            }
+            
+            dropZone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            });
+            
+            function handleFileSelect() {
+                if (fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    
+                    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/bmp'];
+                    if (!validTypes.includes(file.type)) {
+                        notyf.error('Please select a valid image file (PNG, JPG, JPEG, BMP)');
+                        return;
+                    }
+                    
+                    currentFile = file;
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                        processButton.disabled = false;
+                        
+                        resultsContainer.style.display = 'none';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                    notyf.success('Image loaded successfully');
+                }
+            }
+            
+            processButton.addEventListener('click', processImage);
+            reprocessButton.addEventListener('click', processImage);
+            
+            function processImage() {
+                if (!currentFile) {
+                    notyf.error('Please select an image first');
+                    return;
+                }
+                
+                loadingContainer.classList.add('active');
+                
+                const formData = new FormData();
+                formData.append('file', currentFile);
+                
+                for (const [paramName, slider] of Object.entries(paramSliders)) {
+                    formData.append(paramName, slider.value);
+                }
+                
+                fetch('/api/process', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingContainer.classList.remove('active');
+                    
+                    if (data.success) {
+                        displayResults(data);
+                        notyf.success('Image processed successfully');
+                        processButton.classList.add('process-success');
+                        setTimeout(() => {
+                            processButton.classList.remove('process-success');
+                        }, 3000);
+                    } else {
+                        notyf.error(data.error || 'Error processing the image');
+                    }
+                })
+                .catch(error => {
+                    loadingContainer.classList.remove('active');
+                    notyf.error('An error occurred during processing');
+                    console.error('Error:', error);
+                });
+            }
+            
+            function displayResults(data) {
+                const inputImage = `/uploads/${data.inputImage}`;
+                const processedImageSrc = `/results/${data.results.processed}`;
+                const edgesImageSrc = `/results/${data.results.edges}`;
+                const linesImageSrc = `/results/${data.results.lines}`;
+                const maskImageSrc = `/results/${data.results.mask}`;
+                
+                beforeImage.src = inputImage;
+                afterImage.src = processedImageSrc;
+                processedImage.src = processedImageSrc;
+                edgesImage.src = edgesImageSrc;
+                linesImage.src = linesImageSrc;
+                maskImage.src = maskImageSrc;
+                
+                downloadProcessed.href = processedImageSrc;
+                downloadProcessed.download = data.results.processed;
+                
+                resultsContainer.style.display = 'block';
+                
+                initComparisonSlider();
+                
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                document.querySelector('.viz-tab.active').classList.remove('active');
+                document.querySelector('.viz-tab[data-view="processed"]').classList.add('active');
+                document.querySelector('.image-view.active').classList.remove('active');
+                document.getElementById('processedView').classList.add('active');
+            }
+            
+            document.querySelectorAll('.viz-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const view = this.getAttribute('data-view');
+                    
+                    document.querySelector('.viz-tab.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    document.querySelector('.image-view.active').classList.remove('active');
+                    document.getElementById(`${view}View`).classList.add('active');
+                });
+            });
+            
+            function initComparisonSlider() {
+                let isDragging = false;
+                const container = comparisonContainer;
+                const slider = comparisonSlider;
+                const beforeDiv = container.querySelector('.comparison-before');
+                
+                updateSliderPosition(50);
+                
+                function updateSliderPosition(position) {
+                    const containerWidth = container.offsetWidth;
+                    const pos = Math.max(0, Math.min(position, 100));
+                    const pixelPosition = (pos / 100) * containerWidth;
+                    
+                    slider.style.left = `${pos}%`;
+                    beforeDiv.style.width = `${pos}%`;
+                }
+                
+                function handleMouseMove(e) {
+                    if (!isDragging) return;
+                    
+                    const containerWidth = container.offsetWidth;
+                    const containerRect = container.getBoundingClientRect();
+                    const position = ((e.clientX - containerRect.left) / containerWidth) * 100;
+                    
+                    updateSliderPosition(position);
+                }
+                
+                function handleTouchMove(e) {
+                    if (!isDragging || !e.touches[0]) return;
+                    
+                    const containerWidth = container.offsetWidth;
+                    const containerRect = container.getBoundingClientRect();
+                    const position = ((e.touches[0].clientX - containerRect.left) / containerWidth) * 100;
+                    
+                    updateSliderPosition(position);
+                }
+                
+                slider.addEventListener('mousedown', () => { isDragging = true; });
+                container.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    handleMouseMove(e);
+                });
+                
+                slider.addEventListener('touchstart', () => { isDragging = true; }, { passive: true });
+                container.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    handleTouchMove(e);
+                }, { passive: true });
+                
+                window.addEventListener('mouseup', () => { isDragging = false; });
+                window.addEventListener('touchend', () => { isDragging = false; }, { passive: true });
+                
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('touchmove', handleTouchMove, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
